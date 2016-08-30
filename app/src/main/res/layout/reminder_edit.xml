@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp">
+
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Title" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:text="Date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/input_layout_password"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="19dp"
+        android:layout_marginStart="19dp" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_toRightOf="@+id/textView4"
+        android:layout_toEndOf="@+id/textView4"
+        android:layout_marginLeft="57dp"
+        android:layout_marginStart="57dp"
+        android:id="@+id/reminder_date" />
+
+    <TextView
+        android:text="Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView4"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_marginTop="20dp"
+        android:id="@+id/textView6" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reminder_time"
+        android:layout_alignBaseline="@+id/textView6"
+        android:layout_alignBottom="@+id/textView6"
+        android:layout_alignLeft="@+id/reminder_date"
+        android:layout_alignStart="@+id/reminder_date" />
+
+
+    <Button android:id="@+id/confirm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_marginLeft="57dp"
+        android:background="@color/colorAccent"
+        android:layout_marginTop="21dp"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/textView6"
+        android:layout_centerHorizontal="true" />
+
+    <!-- <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/title" />
+
+     <EditText
+         android:id="@+id/title"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content" />
+
+     <Button
+         android:id="@+id/confirm"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/confirm"
+         android:layout_alignParentBottom="true"
+         android:layout_alignRight="@+id/textView"
+         android:layout_alignEnd="@+id/textView"
+         android:layout_marginBottom="52dp" />
+
+     <Button
+         android:id="@+id/reminder_time"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/confirm"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentStart="true"
+         android:layout_marginBottom="12dp" />
+
+     <Button
+         android:id="@+id/reminder_date"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_above="@+id/reminder_time"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentStart="true"
+         android:layout_marginBottom="10dp" />
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/time"
+         android:layout_above="@+id/reminder_date"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentStart="true" />
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/date"
+         android:layout_below="@+id/title"
+         android:layout_alignRight="@+id/textView"
+         android:layout_alignEnd="@+id/textView"
+         android:layout_marginTop="17dp" />-->
+</RelativeLayout>
