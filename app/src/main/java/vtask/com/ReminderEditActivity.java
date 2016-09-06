@@ -3,6 +3,7 @@ package vtask.com;
 /**
  * Created by akhil on 8/28/2016.
  */
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,10 +14,12 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 
 public class ReminderEditActivity extends Activity {
 
@@ -61,7 +65,7 @@ public class ReminderEditActivity extends Activity {
 
         myCalendar = Calendar.getInstance();
         mTitleText = (EditText) findViewById(R.id.title);
-      //  mBodyText = (EditText) findViewById(R.id.body);
+        //  mBodyText = (EditText) findViewById(R.id.body);
         _date = (TextView) findViewById(R.id.reminder_date);
         _time = (TextView) findViewById(R.id.reminder_time);
         mConfirmButton = (Button) findViewById(R.id.confirm);
@@ -96,14 +100,14 @@ public class ReminderEditActivity extends Activity {
             }
         });
 
-        final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener(){
+        final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 
             @Override
             public void onTimeSet(TimePicker timePicker, int hours, int min) {
                 myCalendar.set(Calendar.HOUR_OF_DAY, hours);
                 myCalendar.set(Calendar.MINUTE, min);
                 String myformat = "HH:mm";
-                SimpleDateFormat sdf = new SimpleDateFormat(myformat,Locale.ENGLISH);
+                SimpleDateFormat sdf = new SimpleDateFormat(myformat, Locale.ENGLISH);
                 _time.setText(sdf.format(myCalendar.getTime()));
 
             }
@@ -112,7 +116,7 @@ public class ReminderEditActivity extends Activity {
         _time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new TimePickerDialog(ReminderEditActivity.this, time, myCalendar.get(Calendar.HOUR_OF_DAY),myCalendar.get(Calendar.MINUTE),true).show();
+                new TimePickerDialog(ReminderEditActivity.this, time, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true).show();
             }
         });
 
@@ -124,7 +128,6 @@ public class ReminderEditActivity extends Activity {
         });
 
 
-
         mRowId = savedInstanceState != null ? savedInstanceState.getLong(RemindersDbAdapter.KEY_ROWID)
                 : null;
 
@@ -133,13 +136,34 @@ public class ReminderEditActivity extends Activity {
 
     private void saveTask() {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        String date = sdf.format(_date.getText().toString());
-        String time = _time.getText().toString();
-        ReminderItem ri = new ReminderItem();
-        ri.setTitle(mTitleText.getText().toString());
-        ri.setDateTime(date+":"+time);
-        mDbHelper.insertEvent(ri);
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            SimpleDateFormat inputFormatter1 = new SimpleDateFormat("EEE, MMM d, yyyy");
+            Date date1 = inputFormatter1.parse(_date.getText().toString());
+            SimpleDateFormat outputFormatter1 = new SimpleDateFormat("yyyy-MM-dd");
+            String date = outputFormatter1.format(date1); //
+            //String date = sdf.format(_date.getText().toString()).toString();
+            String time = _time.getText().toString();
+            ReminderItem ri = new ReminderItem();
+            ri.setTitle(mTitleText.getText().toString());
+            ri.setDateTime(date + ":" + time);
+            ri.setDate(_date.getText().toString());
+            ri.setTime(_time.getText().toString());
+            mRowId = mDbHelper.insertEvent(ri);
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd : HH:mm");
+            Date theDate = null;
+
+            theDate = simpleDateFormat.parse(date + " : " + time);
+            myCalendar.setTime(theDate);
+            new ReminderManager(this).setReminder(mRowId, myCalendar);
+            Toast.makeText(this, "Task Added", Toast.LENGTH_LONG).show();
+            Intent i = new Intent(ReminderEditActivity.this, ReminderListActivity.class);
+            startActivity(i);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -151,7 +175,7 @@ public class ReminderEditActivity extends Activity {
         _date.setText(sdf.format(myCalendar.getTime()));
     }
 
-    public  String getCurrentDate() {
+    public String getCurrentDate() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("EEE, MMM d, yyyy");//dd/MM/yyyy
         Date now = new Date();
         String strDate = sdfDate.format(now);
@@ -162,7 +186,7 @@ public class ReminderEditActivity extends Activity {
 
         String myformat = "HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(myformat, Locale.ENGLISH);
-       return sdf.format(myCalendar.getTime());
+        return sdf.format(myCalendar.getTime());
 
     }
 
@@ -184,9 +208,9 @@ public class ReminderEditActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-       // mDbHelper.open();
+        // mDbHelper.open();
         setRowIdFromIntent();
-       // populateFields();
+        // populateFields();
     }
 
    /*  @Override

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class ReminderDb  extends SQLiteOpenHelper {
 
 
     //add new events
-    public void insertEvent(ReminderItem item){
+    public Long insertEvent(ReminderItem item){
 
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -63,7 +64,7 @@ public class ReminderDb  extends SQLiteOpenHelper {
         values.put(DATE_TIME, item.getDateTime());
         values.put(DATE, item.getDate());
         values.put(TIME,item.getTime());
-        db.insert(TABLE_NAME,null,values);
+       return db.insert(TABLE_NAME,null,values);
 
     }
 
@@ -73,7 +74,7 @@ public class ReminderDb  extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<ReminderItem> contactList = new ArrayList<ReminderItem>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME;
+        String selectQuery = "SELECT id, title, date, time, date_time   FROM " + TABLE_NAME;
 
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
@@ -81,18 +82,19 @@ public class ReminderDb  extends SQLiteOpenHelper {
                 ReminderItem contact = new ReminderItem();
                 contact.setId(Integer.parseInt(cursor.getString(0)));
                 contact.setTitle(cursor.getString(1));
-                contact.setDateTime(cursor.getString(2));
+                contact.setDate(cursor.getString(2));
+                contact.setTime(cursor.getString(3));
+                contact.setDateTime(cursor.getString(4));
                 // Adding contact to list
+                //Log.d("rem",cursor.getString(1)+"--"+cursor.getString(2));
                 contactList.add(contact);
             } while (cursor.moveToNext());
         }
-
-
         return contactList;
     }
 
     //get single event
-    public ReminderItem getEvent(int id){
+    public ReminderItem getEvent(Long id){
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -106,12 +108,13 @@ public class ReminderDb  extends SQLiteOpenHelper {
         item.setDateTime(cursor.getString(2));
         item.setTitle(cursor.getString(1));
         item.setId(cursor.getInt(0));
-
         return item;
     }
 
     //delete events
     public void deleteEvent(){
+
+
 
     }
 
