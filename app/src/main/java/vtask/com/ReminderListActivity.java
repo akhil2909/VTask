@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -37,6 +38,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ReminderListActivity extends AppCompatActivity {
 
@@ -51,6 +53,9 @@ public class ReminderListActivity extends AppCompatActivity {
     private ReminderAdapter mAdapter;
 
     TextView noShow;
+
+    private NotificationReceiver nReceiver;
+
 
     /**
      * Called when the activity is first created.
@@ -98,24 +103,59 @@ public class ReminderListActivity extends AppCompatActivity {
             }
         });
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(onNotice, new IntentFilter("Msg"));
-
-
-
+        nReceiver = new NotificationReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("vtask.com.NOTIFICATION_LISTENER_EXAMPLE");
+        registerReceiver(nReceiver,filter);
     }
 
-    private BroadcastReceiver onNotice= new BroadcastReceiver() {
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(nReceiver);
+    }
+
+
+
+
+    class NotificationReceiver extends BroadcastReceiver implements TextToSpeech.OnInitListener{
+
+        private TextToSpeech tts;
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String pack = intent.getStringExtra("package");
-            String title = intent.getStringExtra("title");
-            String text = intent.getStringExtra("text");
-           // System.out.println("&&&&&&&@@@@@@@@");
-            Log.d("hjhjhjh",pack+"-----"+title);
-            Toast.makeText(ReminderListActivity.this,title,Toast.LENGTH_LONG).show();
+            String package_name = intent.getStringExtra("package_name") + "n";
+            String packager_name = intent.getStringExtra("package_name");
+            System.out.println(packager_name);
+//            System.out.println("-------"+temp);
+                Toast.makeText(ReminderListActivity.this, intent.getStringExtra("notification_title"), Toast.LENGTH_LONG).show();
+
         }
-    };
+
+        @Override
+        public void onInit(int status) {
+            if (status == TextToSpeech.SUCCESS) {
+
+                int result = tts.setLanguage(Locale.US);
+
+                if (result == TextToSpeech.LANG_MISSING_DATA
+                        || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "This Language is not supported");
+                } else {
+                   // btnSpeak.setEnabled(true);
+                    speakOut();
+                }
+
+            } else {
+                Log.e("TTS", "Initilization Failed!");
+            }
+        }
+
+        private void speakOut() {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
 
 /*
     private void createReminder() {

@@ -37,15 +37,12 @@
 
         <service android:name=".ReminderService" />
 
-        <service
-            android:name=".NotificationService"
+        <service android:name=".NotificationService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
-
         </service>
 
         <!--       <activity
