@@ -13,8 +13,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -36,10 +39,17 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class ReminderListActivity extends AppCompatActivity {
 
 
@@ -48,13 +58,18 @@ public class ReminderListActivity extends AppCompatActivity {
 
     private ReminderDb mDbHelper;
 
-    private List<ReminderItem> movieList ;
+    private List<ReminderItem> movieList;
     private RecyclerView recyclerView;
     private ReminderAdapter mAdapter;
 
     TextView noShow;
 
     private NotificationReceiver nReceiver;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     /**
@@ -68,15 +83,15 @@ public class ReminderListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        noShow = (TextView)findViewById(R.id.empty);
+        noShow = (TextView) findViewById(R.id.empty);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mDbHelper = new ReminderDb(this);
         movieList = mDbHelper.getAllEvents();
-        if(movieList.isEmpty()){
+        if (movieList.isEmpty()) {
 
             noShow.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
-        }else{
+        } else {
             noShow.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             mAdapter = new ReminderAdapter(movieList);
@@ -89,7 +104,6 @@ public class ReminderListActivity extends AppCompatActivity {
             mAdapter.notifyDataSetChanged();
 
         }
-
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -106,7 +120,10 @@ public class ReminderListActivity extends AppCompatActivity {
         nReceiver = new NotificationReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("vtask.com.NOTIFICATION_LISTENER_EXAMPLE");
-        registerReceiver(nReceiver,filter);
+        registerReceiver(nReceiver, filter);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
@@ -116,10 +133,44 @@ public class ReminderListActivity extends AppCompatActivity {
         unregisterReceiver(nReceiver);
     }
 
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("ReminderList Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 
 
-
-    class NotificationReceiver extends BroadcastReceiver implements TextToSpeech.OnInitListener{
+    class NotificationReceiver extends BroadcastReceiver implements TextToSpeech.OnInitListener {
 
         private TextToSpeech tts;
 
@@ -128,9 +179,9 @@ public class ReminderListActivity extends AppCompatActivity {
             String package_name = intent.getStringExtra("package_name") + "n";
             String packager_name = intent.getStringExtra("package_name");
             System.out.println(packager_name);
-//            System.out.println("-------"+temp);
-                Toast.makeText(ReminderListActivity.this, intent.getStringExtra("notification_title"), Toast.LENGTH_LONG).show();
-
+            System.out.println(MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder"));
+            Toast.makeText(ReminderListActivity.this, intent.getStringExtra("notification_title"), Toast.LENGTH_LONG).show();
+            speakOut();
         }
 
         @Override
@@ -143,7 +194,7 @@ public class ReminderListActivity extends AppCompatActivity {
                         || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                     Log.e("TTS", "This Language is not supported");
                 } else {
-                   // btnSpeak.setEnabled(true);
+                    // btnSpeak.setEnabled(true);
                     speakOut();
                 }
 
@@ -152,8 +203,9 @@ public class ReminderListActivity extends AppCompatActivity {
             }
         }
 
+
         private void speakOut() {
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            tts.speak(MyApplication.readFromPreferences(ReminderListActivity.this, "notify_title", "hello").toString(), TextToSpeech.QUEUE_FLUSH, null, null);
         }
     }
 

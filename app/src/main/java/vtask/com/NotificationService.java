@@ -26,10 +26,13 @@ public class NotificationService extends NotificationListenerService {
 
     private String TAG = this.getClass().getSimpleName();
     private NLServiceReceiver nlservicereciver;
+    MyApplication myApplication;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("MSG-->","Me at onCreate");
+        myApplication = MyApplication.getInstance();
         nlservicereciver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("vtask.com.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
@@ -46,14 +49,18 @@ public class NotificationService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
 
-        //System.out.println("dssdsdsdssssdssdsd");
-        Log.d(TAG, "**********  onNotificationPosted");
-            // Log.d(TAG, "ID :" + sbn.getId() + "t" + sbn.getNotification() + "t" + sbn.getPackageName());
+        if(sbn.getPackageName().equals("vtask.com")) {
+            Log.d("MSG-->","Me at onNotificationPosted");
+            Log.d(TAG, "**********  onNotificationPosted");
+          //  MyApplication.saveToPreferences(MyApplication.getAppContext(), "package_name", sbn.getPackageName());
+            MyApplication.saveToPreferences(MyApplication.getAppContext(), "notify_title", sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString());
+         //   MyApplication.saveToPreferences(MyApplication.getAppContext(), "package_name", sbn.getPackageName());
             Intent i = new Intent("vtask.com.NOTIFICATION_LISTENER_EXAMPLE");
             i.putExtra("notification_event", "onNotificationPosted :" + sbn.getPackageName() + "n");
-            i.putExtra("package_name",sbn.getPackageName());
+            i.putExtra("package_name", sbn.getPackageName());
             i.putExtra("notification_title", sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString());
             sendBroadcast(i);
+        }
 
 
     }
@@ -61,11 +68,12 @@ public class NotificationService extends NotificationListenerService {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-        Log.i(TAG, "********** onNOtificationRemoved");
+
+  /*      Log.i(TAG, "********** onNOtificationRemoved");
         Log.i(TAG, "ID :" + sbn.getId() + "t" + sbn.getNotification().tickerText + "t" + sbn.getPackageName());
         Intent i = new Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
         i.putExtra("notification_event", "onNotificationRemoved :" + sbn.getPackageName() + "n");
-        sendBroadcast(i);
+        sendBroadcast(i);*/
     }
 
 
@@ -75,11 +83,12 @@ public class NotificationService extends NotificationListenerService {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getStringExtra("command").equals("clearall")) {
+                Log.d("MSG-->","Me at NLServiceReceiver if cmd clearall");
                 NotificationService.this.cancelAllNotifications();
             } else if (intent.getStringExtra("command").equals("list")) {
+                Log.d("MSG-->","Me at NLServiceReceiver if cmd list");
                 Intent i1 = new Intent("vtask.com.NOTIFICATION_LISTENER_EXAMPLE");
                 i1.putExtra("notification_event", "=====================");
-
                 sendBroadcast(i1);
                 int i = 1;
                 for (StatusBarNotification sbn : NotificationService.this.getActiveNotifications()) {
