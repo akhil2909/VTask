@@ -12,6 +12,7 @@ public class ReminderItem {
     private String dateTime;
     private String date;
     private String time;
+    private String repeat;
 
 
     public ReminderItem() {
@@ -56,5 +57,13 @@ public class ReminderItem {
 
     public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public String getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(String repeat) {
+        this.repeat = repeat;
     }
 }

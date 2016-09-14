@@ -27,7 +27,9 @@ public class ReminderDb  extends SQLiteOpenHelper {
     private static final String DATE_TIME = "date_time";
     private static final String DATE = "date";
     private static final String TIME = "time";
+    private static final String REPEAT = "repeat";
     private static final String ID = "id";
+
 
 
     public ReminderDb(Context context) {
@@ -42,8 +44,9 @@ public class ReminderDb  extends SQLiteOpenHelper {
         String DATABASE_CREATE =  "create table " + TABLE_NAME + " ("
                 + ID + " integer primary key autoincrement, "
                 + TITLE + " text not null, "
-                + DATE + " text not null, "
-                + TIME + " text not null, "
+                + DATE + " text , "
+                + TIME + " text , "
+                + REPEAT + " text not null,"
                 + DATE_TIME + " text not null);";
         db.execSQL(DATABASE_CREATE);
     }
@@ -64,6 +67,7 @@ public class ReminderDb  extends SQLiteOpenHelper {
         values.put(DATE_TIME, item.getDateTime());
         values.put(DATE, item.getDate());
         values.put(TIME,item.getTime());
+        values.put(REPEAT,item.getRepeat());
        return db.insert(TABLE_NAME,null,values);
 
     }

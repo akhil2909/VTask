@@ -34,7 +34,7 @@ public class ReminderService extends WakeReminderIntentService {
 
         Notification.Builder builder = new Notification.Builder(ReminderService.this);
 
-        builder.setSmallIcon(R.drawable.notification_template_icon_bg)
+        builder.setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(ri.getTitle())
                 .setContentText("Your notification content here.")
                 .setContentIntent(pi);

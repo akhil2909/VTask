@@ -11,9 +11,11 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -49,10 +51,15 @@ public class ReminderEditActivity extends Activity {
     private EditText mBodyText;
     private TextView _date;
     private TextView _time;
+    private TextView _repeat;
     private Button mConfirmButton;
     private Long mRowId;
     private ReminderDb mDbHelper;
     private Calendar myCalendar;
+    final String[] items = {
+            "Every day", "Every Week", "Every Month", "Every Year"
+    };
+
 
 
     @Override
@@ -68,9 +75,26 @@ public class ReminderEditActivity extends Activity {
         //  mBodyText = (EditText) findViewById(R.id.body);
         _date = (TextView) findViewById(R.id.reminder_date);
         _time = (TextView) findViewById(R.id.reminder_time);
+        _repeat  = (TextView)findViewById(R.id.repeat);
         mConfirmButton = (Button) findViewById(R.id.confirm);
 
         //myCalendar = Calendar.getInstance();
+
+        _repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ReminderEditActivity.this);
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        // Do something with the selection
+                        _repeat.setText(items[item]);
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
 
         //initially save current date
@@ -149,11 +173,10 @@ public class ReminderEditActivity extends Activity {
             ri.setDateTime(date + ":" + time);
             ri.setDate(_date.getText().toString());
             ri.setTime(_time.getText().toString());
+            ri.setRepeat(_repeat.getText().toString());
             mRowId = mDbHelper.insertEvent(ri);
-
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd : HH:mm");
             Date theDate = null;
-
             theDate = simpleDateFormat.parse(date + " : " + time);
             myCalendar.setTime(theDate);
             new ReminderManager(this).setReminder(mRowId, myCalendar);
