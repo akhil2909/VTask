@@ -174,8 +174,12 @@ public class ReminderListActivity extends AppCompatActivity {
 
         private TextToSpeech tts;
 
+
+
         @Override
         public void onReceive(Context context, Intent intent) {
+
+            tts = new TextToSpeech(getApplicationContext(),this);
             String package_name = intent.getStringExtra("package_name") + "n";
             String packager_name = intent.getStringExtra("package_name");
             System.out.println(packager_name);
@@ -205,7 +209,10 @@ public class ReminderListActivity extends AppCompatActivity {
 
 
         private void speakOut() {
-            tts.speak(MyApplication.readFromPreferences(ReminderListActivity.this, "notify_title", "hello").toString(), TextToSpeech.QUEUE_FLUSH, null, null);
+            Log.d("msg",MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder"));
+           tts.speak(MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder").toString(), TextToSpeech.QUEUE_FLUSH, null);
+            tts.setPitch((float)1);
+            tts.setSpeechRate((float)1);
         }
     }
 
