@@ -20,7 +20,7 @@ public class ReminderService extends WakeReminderIntentService {
     void doReminderWork(Intent intent) {
         Log.d("ReminderService", "Doing work.");
 
-        Long rowId = intent.getExtras().getLong(RemindersDbAdapter.KEY_ROWID);
+        Long rowId = intent.getExtras().getLong(ReminderDb.ID);
 
         ReminderDb reminderDb = new ReminderDb(this);
         ReminderItem ri = reminderDb.getEvent(rowId);
@@ -28,7 +28,7 @@ public class ReminderService extends WakeReminderIntentService {
         NotificationManager mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         Intent notificationIntent = new Intent(this, ReminderEditActivity.class);
-        notificationIntent.putExtra(RemindersDbAdapter.KEY_ROWID, rowId);
+        notificationIntent.putExtra(ReminderDb.ID, rowId);
 
         PendingIntent pi = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
 

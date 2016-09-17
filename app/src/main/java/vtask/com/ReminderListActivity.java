@@ -166,7 +166,7 @@ public class ReminderListActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
-        super.onStop(); 
+        super.onStop();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -180,16 +180,15 @@ public class ReminderListActivity extends AppCompatActivity {
         private TextToSpeech tts;
 
 
-
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            tts = new TextToSpeech(getApplicationContext(),this);
-            String package_name = intent.getStringExtra("package_name") + "n";
-            String packager_name = intent.getStringExtra("package_name");
-            System.out.println(packager_name);
-            System.out.println(MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder"));
-            Toast.makeText(ReminderListActivity.this, intent.getStringExtra("notification_title"), Toast.LENGTH_LONG).show();
+            tts = new TextToSpeech(getApplicationContext(), this);
+            //String package_name = intent.getStringExtra("package_name") + "n";
+           // String packager_name = intent.getStringExtra("package_name");
+           // System.out.println(packager_name);
+            //System.out.println(MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder"));
+            //Toast.makeText(ReminderListActivity.this, intent.getStringExtra("notification_title"), Toast.LENGTH_LONG).show();
             speakOut();
         }
 
@@ -214,16 +213,16 @@ public class ReminderListActivity extends AppCompatActivity {
 
 
         private void speakOut() {
-            Log.d("msg",MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder"));
-           tts.speak(MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder").toString(), TextToSpeech.QUEUE_FLUSH, null);
-            tts.setPitch((float)1);
-            tts.setSpeechRate((float)1);
+            Log.d("msg", MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder"));
+            tts.speak(MyApplication.readFromPreferences(MyApplication.getAppContext(), "notify_title", "You have Reminder").toString(), TextToSpeech.QUEUE_FLUSH, null);
+            tts.setPitch((float) 1);
+            tts.setSpeechRate((float) 1);
         }
     }
 
     private class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
-        private  final int[] ATTRS = new int[]{
+        private final int[] ATTRS = new int[]{
                 android.R.attr.listDivider
         };
 
@@ -301,24 +300,4 @@ public class ReminderListActivity extends AppCompatActivity {
 
 
     }
-
-/*
-    private void createReminder() {
-        Intent i = new Intent(this, ReminderEditActivity.class);
-        startActivityForResult(i, ACTIVITY_CREATE);
-    }
-
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(this, ReminderEditActivity.class);
-        i.putExtra(RemindersDbAdapter.KEY_ROWID, id);
-        startActivityForResult(i, ACTIVITY_EDIT);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        fillData();
-    }*/
 }

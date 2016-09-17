@@ -6,6 +6,7 @@ package vtask.com;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,43 +24,31 @@ public class OnBootReceiver extends BroadcastReceiver {
 
         ReminderManager reminderMgr = new ReminderManager(context);
 
-        RemindersDbAdapter dbHelper = new RemindersDbAdapter(context);
-        dbHelper.open();
+        ReminderDb rdb = new ReminderDb(context);
+        List<ReminderItem> rList = rdb.getAllEvents();
+        for (ReminderItem rItem : rList) {
 
-        Cursor cursor = dbHelper.fetchAllReminders();
+            Log.d(TAG, "Adding alarm from boot.");
+            // Log.d(TAG, "Row Id Column Index - " + rowIdColumnIndex);
+            // Log.d(TAG, "Date Time Column Index - " + dateTimeColumnIndex);
 
-        if(cursor != null) {
-            cursor.moveToFirst();
+            Long rowId = Long.valueOf(rItem.getId());
+            String dateTime = rItem.getDateTime();
 
-            int rowIdColumnIndex = cursor.getColumnIndex(RemindersDbAdapter.KEY_ROWID);
-            int dateTimeColumnIndex = cursor.getColumnIndex(RemindersDbAdapter.KEY_DATE_TIME);
 
-            while(cursor.isAfterLast() == false) {
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat format = new SimpleDateFormat(ReminderEditActivity.DATE_TIME_FORMAT);
 
-                Log.d(TAG, "Adding alarm from boot.");
-                Log.d(TAG, "Row Id Column Index - " + rowIdColumnIndex);
-                Log.d(TAG, "Date Time Column Index - " + dateTimeColumnIndex);
+            try {
+                java.util.Date date = format.parse(dateTime);
+                cal.setTime(date);
 
-                Long rowId = cursor.getLong(rowIdColumnIndex);
-                String dateTime = cursor.getString(dateTimeColumnIndex);
-
-                Calendar cal = Calendar.getInstance();
-                SimpleDateFormat format = new SimpleDateFormat(ReminderEditActivity.DATE_TIME_FORMAT);
-
-                try {
-                    java.util.Date date = format.parse(dateTime);
-                    cal.setTime(date);
-
-                    reminderMgr.setReminder(rowId, cal);
-                } catch (java.text.ParseException e) {
-                    Log.e("OnBootReceiver", e.getMessage(), e);
-                }
-
-                cursor.moveToNext();
+                reminderMgr.setReminder(rowId, cal);
+            } catch (java.text.ParseException e) {
+                Log.e("OnBootReceiver", e.getMessage(), e);
             }
-            cursor.close() ;
+
         }
 
-        dbHelper.close();
     }
 }

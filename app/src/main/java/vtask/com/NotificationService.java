@@ -25,7 +25,7 @@ public class NotificationService extends NotificationListenerService {
 
 
     private String TAG = this.getClass().getSimpleName();
-    private NLServiceReceiver nlservicereciver;
+   // private NLServiceReceiver nlservicereciver;
     MyApplication myApplication;
 
     @Override
@@ -33,16 +33,16 @@ public class NotificationService extends NotificationListenerService {
         super.onCreate();
         Log.d("MSG-->","Me at onCreate");
         myApplication = MyApplication.getInstance();
-        nlservicereciver = new NLServiceReceiver();
+       // nlservicereciver = new NLServiceReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("vtask.com.NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
-        registerReceiver(nlservicereciver, filter);
+        //registerReceiver(nlservicereciver, filter);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(nlservicereciver);
+        //unregisterReceiver(nlservicereciver);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -77,7 +77,7 @@ public class NotificationService extends NotificationListenerService {
     }
 
 
-    class NLServiceReceiver extends BroadcastReceiver {
+   /* class NLServiceReceiver extends BroadcastReceiver {
 
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
@@ -106,7 +106,7 @@ public class NotificationService extends NotificationListenerService {
             }
 
         }
-    }
+    }*/
 }
 
 

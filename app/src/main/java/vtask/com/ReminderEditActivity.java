@@ -152,7 +152,7 @@ public class ReminderEditActivity extends Activity {
         });
 
 
-        mRowId = savedInstanceState != null ? savedInstanceState.getLong(RemindersDbAdapter.KEY_ROWID)
+        mRowId = savedInstanceState != null ? savedInstanceState.getLong(ReminderDb.ID)
                 : null;
 
         //registerButtonListenersAndSetDefaultText();
@@ -216,7 +216,7 @@ public class ReminderEditActivity extends Activity {
     private void setRowIdFromIntent() {
         if (mRowId == null) {
             Bundle extras = getIntent().getExtras();
-            mRowId = extras != null ? extras.getLong(RemindersDbAdapter.KEY_ROWID)
+            mRowId = extras != null ? extras.getLong(ReminderDb.ID)
                     : null;
 
         }
@@ -235,169 +235,5 @@ public class ReminderEditActivity extends Activity {
         setRowIdFromIntent();
         // populateFields();
     }
-
-   /*  @Override
-    protected Dialog onCreateDialog(int id) {
-        switch(id) {
-            case DATE_PICKER_DIALOG:
-                return showDatePicker();
-            case TIME_PICKER_DIALOG:
-                return showTimePicker();
-        }
-        return super.onCreateDialog(id);
-    }
-
-    private DatePickerDialog showDatePicker() {
-
-
-        DatePickerDialog datePicker = new DatePickerDialog(ReminderEditActivity.this, new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateDateButtonText();
-            }
-        }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-        return datePicker;
-    }
-
-    private TimePickerDialog showTimePicker() {
-
-        TimePickerDialog timePicker = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                myCalendar.set(Calendar.MINUTE, minute);
-                updateTimeButtonText();
-            }
-        }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true);
-
-        return timePicker;
-    }
-
-   private void registerButtonListenersAndSetDefaultText() {
-
-        mDateButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                showDialog(DATE_PICKER_DIALOG);
-            }
-        });
-
-
-        mTimeButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                showDialog(TIME_PICKER_DIALOG);
-            }
-        });
-
-        mConfirmButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                saveState();
-                setResult(RESULT_OK);
-                Toast.makeText(ReminderEditActivity.this, getString(R.string.task_saved_message), Toast.LENGTH_SHORT).show();
-                finish();
-            }
-
-        });
-
-        updateDateButtonText();
-        updateTimeButtonText();
-    }
-
-    private void populateFields()  {
-
-
-
-        // Only populate the text boxes and change the calendar date
-        // if the row is not null from the database.
-        if (mRowId != null) {
-            Cursor reminder = mDbHelper.fetchReminder(mRowId);
-            startManagingCursor(reminder);
-            mTitleText.setText(reminder.getString(
-                    reminder.getColumnIndexOrThrow(RemindersDbAdapter.KEY_TITLE)));
-            mBodyText.setText(reminder.getString(
-                    reminder.getColumnIndexOrThrow(RemindersDbAdapter.KEY_BODY)));
-
-
-            // Get the date from the database and format it for our use.
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
-            Date date = null;
-            try {
-                String dateString = reminder.getString(reminder.getColumnIndexOrThrow(RemindersDbAdapter.KEY_DATE_TIME));
-                date = dateTimeFormat.parse(dateString);
-                myCalendar.setTime(date);
-            } catch (ParseException e) {
-                Log.e("ReminderEditActivity", e.getMessage(), e);
-            }
-        } else {
-            // This is a new task - add defaults from preferences if set.
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            String defaultTitleKey = getString(R.string.pref_task_title_key);
-            String defaultTimeKey = getString(R.string.pref_default_time_from_now_key);
-
-            String defaultTitle = prefs.getString(defaultTitleKey, null);
-            String defaultTime = prefs.getString(defaultTimeKey, null);
-
-            if(defaultTitle != null)
-                mTitleText.setText(defaultTitle);
-
-            if(defaultTime != null)
-                myCalendar.add(Calendar.MINUTE, Integer.parseInt(defaultTime));
-
-        }
-
-        updateDateButtonText();
-        updateTimeButtonText();
-
-    }
-
-    private void updateTimeButtonText() {
-        // Set the time button text based upon the value from the database
-        SimpleDateFormat timeFormat = new SimpleDateFormat(TIME_FORMAT);
-        String timeForButton = timeFormat.format(myCalendar.getTime());
-       // mTimeButton.setText(timeForButton);
-    }
-
-    private void updateDateButtonText() {
-        // Set the date button text based upon the value from the database
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        String dateForButton = dateFormat.format(myCalendar.getTime());
-       // mDateButton.setText(dateForButton);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(RemindersDbAdapter.KEY_ROWID, mRowId);
-    }
-
-
-
-    private void saveState() {
-        String title = mTitleText.getText().toString();
-        String body = mBodyText.getText().toString();
-
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
-        String reminderDateTime = dateTimeFormat.format(myCalendar.getTime());
-
-        if (mRowId == null) {
-
-            long id = mDbHelper.createReminder(title, body, reminderDateTime);
-            if (id > 0) {
-                mRowId = id;
-            }
-        } else {
-            mDbHelper.updateReminder(mRowId, title, body, reminderDateTime);
-        }
-
-        new ReminderManager(this).setReminder(mRowId, myCalendar);
-    }*/
 
 }

@@ -24,11 +24,11 @@ public class ReminderDb  extends SQLiteOpenHelper {
 
     private static final String TABLE_NAME="reminders";
     private static final String TITLE ="title";
-    private static final String DATE_TIME = "date_time";
+    public static final String DATE_TIME = "date_time";
     private static final String DATE = "date";
     private static final String TIME = "time";
     private static final String REPEAT = "repeat";
-    private static final String ID = "id";
+    public static final String ID = "id";
 
 
 
@@ -78,7 +78,7 @@ public class ReminderDb  extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         List<ReminderItem> contactList = new ArrayList<ReminderItem>();
         // Select All Query
-        String selectQuery = "SELECT id, title, date, time, date_time   FROM " + TABLE_NAME;
+        String selectQuery = "SELECT id, title, date, time, date_time   FROM " + TABLE_NAME + " ORDER BY date_time DESC";
 
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {

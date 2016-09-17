@@ -17,14 +17,11 @@ public class OnAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "Received wake up from alarm manager.");
-
-        long rowid = intent.getExtras().getLong(RemindersDbAdapter.KEY_ROWID);
-
+        Log.d("OnAlarmReceiver", "Received wake up from alarm manager.");
+        long rowid = intent.getExtras().getLong(ReminderDb.ID);
         WakeReminderIntentService.acquireStaticLock(context);
-
         Intent i = new Intent(context, ReminderService.class);
-        i.putExtra(RemindersDbAdapter.KEY_ROWID, rowid);
+        i.putExtra(ReminderDb.ID, rowid);
         context.startService(i);
-
     }
 }
